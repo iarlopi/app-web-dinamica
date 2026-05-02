@@ -2,6 +2,28 @@ const express = require('express');
 const app = express();
 const pool = require('./db');
 
+pool.query(`
+CREATE TABLE IF NOT EXISTS usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    email VARCHAR(100)
+);
+`).then(() => {
+    console.log("Tabla usuarios lista");
+
+    return pool.query(`
+        INSERT INTO usuarios (nombre, email)
+        VALUES ('Ana', 'ana@email.com')
+        WHERE NOT EXISTS (
+            SELECT 1 FROM usuarios WHERE email = 'ana@email.com'
+        );
+    `);
+})
+.then(() => {
+    console.log("Datos iniciales insertados");
+})
+.catch(err => console.error(err));
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
