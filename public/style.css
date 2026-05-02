@@ -1,0 +1,102 @@
+header {
+    margin-bottom: 20px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+    background: #f5f6fa; 
+    color: #2d3436;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+#lista-usuarios {
+    padding: 0;
+}
+
+.seccion {
+    background: #eefaff;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.seccion h2 {
+    margin-bottom: 15px;
+}
+
+.seccion:hover {
+    transform: scale(1.01);
+    transition: 0.2s;
+}
+
+#lista-usuarios li {
+    list-style: none;
+    background: white;
+    margin: 10px auto;
+    padding: 12px;
+    width: 90%;
+    max-width: 320px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    font-weight: bold;
+    text-align: center;
+}
+
+#contenido-api img {
+    margin-top: 15px;
+    border-radius: 10px;
+    max-width: 90%;
+}
+
+iframe {
+    margin-top: 20px;
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+button {
+    margin: 5px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Botón principal */
+button[type="submit"] {
+    background: #0984e3;
+    color: white;
+}
+
+/* Eliminar */
+button.eliminar {
+    background: #d63031;
+    color: white;
+}
+
+/* Editar */
+button.editar {
+    background: #fdcb6e;
+}
+
+@media (max-width: 600px) {
+    #lista-usuarios li {
+        width: 90%;
+        max-width: 300px;
+    }
+}

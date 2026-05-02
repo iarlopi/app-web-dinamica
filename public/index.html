@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App web dinámica</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<header>
+    <h1>Aplicación web dinámica</h1>
+    <p>Base de datos + APIs externas</p>
+</header>
+
+<body>
+
+    <p id="fecha">Cargando datos...</p>
+
+<div class="seccion">    
+    <h2>Usuarios desde la base de datos</h2>
+    <ul id="lista-usuarios"></ul>
+    
+    <h2>Agregar usuario</h2>
+
+    <form id="form-usuario">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Agregar</button>
+    </form>
+</div>
+
+<div class="seccion">
+    <h2>Video externo</h2>
+
+    <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        frameborder="0" 
+        allowfullscreen>
+    </iframe>
+</div>
+
+<div class="seccion">
+    <h2>Contenido dinámico</h2>
+    <h3>Elige lo que quieres ver</h3>
+
+
+    <select id="tipo-contenido">
+        <option value="perro">Perro</option>
+        <option value="gato">Gato</option>
+    </select>
+
+    <button onclick="cargarContenido()">Cargar</button>
+
+    <div id="contenido-api"></div>
+</div>
+
+    <script>
+        fetch('/api')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('fecha').innerText =
+                    "Fecha desde DB: " + data[0].now;
+            })
+            .catch(err => {
+                document.getElementById('fecha').innerText =
+                    "Error cargando datos";
+            });
+    </script>
+
+    <script>
+    const lista = document.getElementById('lista-usuarios');
+
+    function cargarUsuarios() {
+        lista.innerHTML = '';
+
+        fetch('/usuarios')
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(user => {
+                    const li = document.createElement('li');
+
+                    li.innerHTML = `
+                        ${user.nombre} - ${user.email}
+                        <br>
+                        <button onclick="eliminar(${user.id})">Eliminar</button>
+                        <button onclick="editar(${user.id}, '${user.nombre}', '${user.email}')">Editar</button>
+                    `;
+
+                    lista.appendChild(li);
+                });
+            });
+    }
+
+    function eliminar(id) {
+        fetch(`/usuarios/${id}`, {
+            method: 'DELETE'
+        }).then(() => cargarUsuarios());
+    }
+
+    function editar(id, nombre, email) {
+        const nuevoNombre = prompt('Nuevo nombre:', nombre);
+        const nuevoEmail = prompt('Nuevo email:', email);
+
+        if (!nuevoNombre || !nuevoEmail) return;
+
+        fetch(`/usuarios/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nombre: nuevoNombre,
+                email: nuevoEmail
+            })
+        }).then(() => cargarUsuarios());
+    }
+
+    document.getElementById('form-usuario').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+
+        fetch('/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre, email })
+        }).then(() => {
+            cargarUsuarios();
+            e.target.reset();
+        });
+    });
+
+    cargarUsuarios();
+    </script>
+
+    <script>
+    function cargarContenido() {
+        const tipo = document.getElementById('tipo-contenido').value;
+        const contenedor = document.getElementById('contenido-api');
+
+        if (tipo === 'perro') {
+            fetch('https://dog.ceo/api/breeds/image/random')
+                .then(res => res.json())
+                .then(data => {
+                    contenedor.innerHTML = `<img src="${data.message}" width="300">`;
+                });
+        }
+
+        if (tipo === 'gato') {
+            fetch('https://api.thecatapi.com/v1/images/search')
+                .then(res => res.json())
+                .then(data => {
+                    contenedor.innerHTML = `<img src="${data[0].url}" width="300">`;
+                });
+        }
+
+    }
+    </script>
+
+</body>
+</html>
